@@ -48,15 +48,19 @@ class App extends Component {
   }
 
   renderActiveVotes() {
-    const proportions = portionsFromBallots(this.props.ballots, this.state.activeCandidates);
+    const { ballots } = this.props;
+    const proportions = portionsFromBallots(ballots, this.state.activeCandidates);
+    console.log(proportions)
     return candidates.map(candidate => {
       const total = proportions[candidate] || 0;
+      const color = total > (ballots.length / 2) ? 'success' : 'primary';
+      const width = (total / ballots.length) * 100;
 
       return (
         <Fragment>
           { candidate }
           <div className='progress'>
-            <div className={ `progress-bar bg-${ total > 50 ? 'success' : 'primary' }`} style={{ width: `${ total }%` }} />
+            <div className={ `progress-bar bg-${ color }`} style={{ width: `${ width }%` }} />
           </div>
         </Fragment>
       );
@@ -123,32 +127,30 @@ class App extends Component {
   render() {
     return (
       <div className='container'>
-        <div className='row'>
-          <div className='col-xs-12 col-md-6'>
-            <h2>Portion of active votes</h2>
-            { this.renderActiveVotes() }
-            <br />
-            { this.renderButtons() }
-          </div>
-          <div className='col-xs-12 col-sm-6'>
-            <h2>Active choices in round { this.state.round + 1 }</h2>
-            { this.renderBallots() }
-          </div>
-        </div>
+        <h2>Portion of active votes</h2>
+        { this.renderActiveVotes() }
+        <br />
+        { this.renderButtons() }
+        <h2>Active choices in round { this.state.round + 1 }</h2>
+        { this.renderBallots() }
       </div>
     );
   }
 }
 
 const candidates = [
-  'Earth',
-  'Fire',
-  'Wind',
-  'Water',
-  'Heart',
-  'Snap',
-  'Crackle',
-  'Pop'
+  'Superman',
+  'Batman',
+  'Spiderman',
+  'Hulk',
+  'Thor',
+  'Wonder Woman',
+  'Flash',
+  'Hawkgirl',
+  'Green Lantern',
+  'Iron Man',
+  'Cyborg',
+  'Martian Manhunter'
 ];
 
 function randomBallot() {
@@ -161,7 +163,7 @@ function randomBallot() {
 }
 
 function generateBallots() {
-  return Array(100).fill(0).map(() => randomBallot());
+  return Array(1000).fill(0).map(() => randomBallot());
 }
 
 export default function withBallots () {
