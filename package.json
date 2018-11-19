@@ -7,8 +7,8 @@
     "build:watch": "webpack --watch",
     "start": "http-server"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "Sivan Mehta",
+  "license": "MIT",
   "babel": {
     "presets": [
       "@babel/env",
