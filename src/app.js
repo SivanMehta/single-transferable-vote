@@ -100,19 +100,19 @@ class App extends Component {
   render() {
     return (
       <div className='container'>
-        <h1>Portion of active votes in round { this.state.round + 1 }</h1>
-        { this.renderActiveVotes() }
-
-        <br />
-
-        <button className="btn btn-success btn-lg" onClick={ this.next.bind(this) }>
-          Next Round
-        </button>
-
-        <br />
-
-        <h1>Ballots</h1>
-        { this.renderBallots() }
+        <div className='row'>
+          <div className='col-xs-12 col-md-6'>
+            <h2>Portion of active votes</h2>
+            { this.renderActiveVotes() }
+            <button className="btn btn-success btn-lg" onClick={ this.next.bind(this) }>
+              Next Round
+            </button>
+          </div>
+          <div className='col-xs-12 col-sm-6'>
+            <h2>Active ballots in round { this.state.round + 1 }</h2>
+            { this.renderBallots() }
+          </div>
+        </div>
       </div>
     );
   }
