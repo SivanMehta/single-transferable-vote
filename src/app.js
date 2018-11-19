@@ -76,9 +76,23 @@ class App extends Component {
 
   next() {
     const { activeCandidates, round } = this.state;
+    const roundVotes = portionsFromBallots(this.props.ballots, activeCandidates);
+
+    if(round == candidates.length - 1) {
+      return;
+    }
+
+    let lowest = '';
+    let lowestCount = Infinity;
+    activeCandidates.forEach(name => {
+      if(roundVotes[name] < lowestCount) {
+        lowest = name;
+        lowestCount = roundVotes[name];
+      }
+    });
 
     this.setState({
-      activeCandidates: activeCandidates.slice(0, activeCandidates.length - 1),
+      activeCandidates: activeCandidates.filter(name => name != lowest),
       round: round + 1
     });
   }
@@ -109,7 +123,10 @@ const candidates = [
   'Fire',
   'Wind',
   'Water',
-  'Heart'
+  'Heart',
+  'Snap',
+  'Crackle',
+  'Pop'
 ];
 
 function randomBallot() {
