@@ -6,7 +6,8 @@ class App extends Component {
     super();
     this.state = {
       round: 0,
-      activeCandidates: [ ...candidates ]
+      activeCandidates: [ ...candidates ],
+      inactiveCandidates: []
     };
   }
 
@@ -36,26 +37,14 @@ class App extends Component {
     ));
   }
 
-  renderBallotHeaders() {
-    return candidates.map((_, i) => (
-      <th scope="col">{ i + 1 }</th>
-    ));
-  }
-
   renderBallots() {
     return (
       <table className='table'>
-        <thead>
-          <tr>
-            { this.renderBallotHeaders() }
-          </tr>
-        </thead>
         <tbody>
           { this.renderBallotRows() }
         </tbody>
       </table>
-
-    )
+    );
   }
 
   renderActiveVotes() {
@@ -75,12 +64,8 @@ class App extends Component {
   }
 
   next() {
-    const { activeCandidates, round } = this.state;
+    const { activeCandidates, round, inactiveCandidates } = this.state;
     const roundVotes = portionsFromBallots(this.props.ballots, activeCandidates);
-
-    if(round == candidates.length - 1) {
-      return;
-    }
 
     let lowest = '';
     let lowestCount = Infinity;
@@ -93,8 +78,46 @@ class App extends Component {
 
     this.setState({
       activeCandidates: activeCandidates.filter(name => name != lowest),
-      round: round + 1
+      round: round + 1,
+      inactiveCandidates: inactiveCandidates.concat(lowest)
     });
+  }
+
+  prev() {
+    const { activeCandidates, inactiveCandidates, round } = this.state;
+
+    this.setState({
+      activeCandidates: activeCandidates.concat(inactiveCandidates.pop()),
+      inactiveCandidates,
+      round: round - 1
+    })
+  }
+
+  renderButtons() {
+    const { round } = this.state;
+    const next = (
+      <button
+          className="btn btn-success"
+          onClick={ this.next.bind(this) }
+          disabled={ round > candidates.length - 2 }>
+        Next Round
+      </button>
+    );
+    const previous = (
+      <button
+          className="btn btn-danger"
+          onClick={ this.prev.bind(this) }
+          disabled={ round < 1 }>
+        Previous Round
+      </button>
+    );
+
+    return (
+      <Fragment>
+        { next }
+        { previous }
+      </Fragment>
+    );
   }
 
   render() {
@@ -104,12 +127,11 @@ class App extends Component {
           <div className='col-xs-12 col-md-6'>
             <h2>Portion of active votes</h2>
             { this.renderActiveVotes() }
-            <button className="btn btn-success btn-lg" onClick={ this.next.bind(this) }>
-              Next Round
-            </button>
+            <br />
+            { this.renderButtons() }
           </div>
           <div className='col-xs-12 col-sm-6'>
-            <h2>Active ballots in round { this.state.round + 1 }</h2>
+            <h2>Active choices in round { this.state.round + 1 }</h2>
             { this.renderBallots() }
           </div>
         </div>
